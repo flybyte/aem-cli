@@ -89,8 +89,8 @@ export const printErrorAndExit = (msg, code = 999) => {
 };
 
 export const parseEnvFile = () => {
-    const envFilePath = path.join(process.cwd(), ".env");
-    const fileContent = fs.readFileSync(envFilePath, "utf8");
+    const filePath = path.join(process.cwd(), ".env");
+    const fileContent = fs.readFileSync(filePath, "utf8");
 
     const result = {};
 
@@ -107,3 +107,58 @@ export const parseEnvFile = () => {
 
     return result;
 };
+
+export const fetchResource = async (url) => {
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(response.statusText);
+        }
+
+        return response;
+    } catch (error) {
+        printErrorAndExit(`Cannot fetch resource for ${url}: ${error.message}`, 105);
+    }
+};
+
+export const fetchResourceAsText = async (url) => {
+    return (await fetchResource(url)).text();
+}
+
+export const fetchResourceAsBinary = async (url) => {
+    return (await fetchResource(url)).body;
+}
+
+export const options2data = (options) => {
+    const data = {};
+
+    const author = options.author.split(",");
+    const publish = options.publish.split(",");
+    const proxy = options.proxy.split(",");
+    const mail = options.mail.split(",");
+
+    data.AUTHOR_HTTP = author[0];
+    data.AUTHOR_DEBUG = author[1];
+    data.AUTHOR_JMX = author[2];
+    data.BACKUP_DIR = path.join(process.cwd(), options.backup);
+    data.DISPATCHER_HTTP = options.dispatcher;
+    data.DOMAIN = options.domain;
+    data.ENGINE = options.engine;
+    data.IMAGE = options.image;
+    data.MAIL_HTTP = mail[0]
+    data.MAIL_SMTP = mail[1]
+    data.NAME = options.name;
+    data.PROJECT_DIR = path.resolve(options.maven);
+    data.PROXY_HTTP = proxy[0];
+    data.PROXY_HTTPS = proxy[1];
+    data.SSL = options.ssl;
+    data.PUBLISH_HTTP = publish[0];
+    data.PUBLISH_DEBUG = publish[1];
+    data.PUBLISH_JMX = publish[2];
+    data.TAG = options.tag;
+    data.TZ = options.timezone;
+    data.VOLUME_DIR = path.join(process.cwd(), options.volume);
+
+    return data;
+};
+
