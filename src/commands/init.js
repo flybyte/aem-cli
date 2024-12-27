@@ -1,7 +1,7 @@
 import path from "path";
 import { Option } from "commander";
 import chalk from "chalk";
-import ejs from "ejs";
+import * as Sqrl from 'squirrelly';
 import { Constants } from "../constants.js";
 import {
     checkIfContainerEngineAvailable,
@@ -86,8 +86,10 @@ const createLocalFiles = async (options) => {
     const envTpl = await fetchResourceAsText(Constants.templates.env);
     const composeTpl = await fetchResourceAsText(Constants.templates.compose);
 
+    const envTpl2 = "AUTHOR_HTTP: {{it.AUTHOR_HTTP}} \nAUTHOR_DEBUG: {{it.AUTHOR_DEBUG}} \n# test";
+
     const envData = options2data(options);
-    const env = ejs.render(envTpl, envData);
+    const env = Sqrl.render(envTpl2, envData);
 
     console.log(env);
     // write env
