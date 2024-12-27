@@ -1,0 +1,133 @@
+services:
+  author:
+    container_name: author
+    hostname: author
+    image: ${IMAGE}/aem:${TAG}
+    restart: always
+    stop_grace_period: 300s
+    environment:
+      - TZ=${TZ}
+      - AEM_RUNMODE=author,localdev
+      - JVM_XMX=4g
+      - JVM_META=512m
+    ports:
+      - "${AUTHOR_HTTP}:4500"
+      - "${AUTHOR_DEBUG}:30303"
+      - "${AUTHOR_JMX}:8686"
+    volumes:
+      - ${VOLUME_DIR}/author/install:/aem/crx-quickstart/install:ro
+      - ${VOLUME_DIR}/author/logs:/aem/crx-quickstart/logs
+    cap_drop:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+
+  publish:
+    container_name: publish
+    hostname: publish
+    image: ${IMAGE}/aem:${TAG}
+    restart: always
+    stop_grace_period: 300s
+    environment:
+      - TZ=${TZ}
+      - AEM_RUNMODE=publish,localdev
+      - JVM_XMX=4g
+      - JVM_META=512m
+    ports:
+      - "${PUBLISH_HTTP}:4500"
+      - "${PUBLISH_DEBUG}:30303"
+      - "${PUBLISH_JMX}:8686"
+    volumes:
+      - ${VOLUME_DIR}/publish/install:/aem/crx-quickstart/install:ro
+      - ${VOLUME_DIR}/publish/logs:/aem/crx-quickstart/logs
+    cap_drop:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 6g
+
+  dispatcher:
+    container_name: dispatcher
+    hostname: dispatcher
+    image: ${IMAGE}/dispatcher:${TAG}
+    restart: always
+    environment:
+      - TZ=${TZ}
+      - AEM_HOST=publish
+      - AEM_IP=*
+      - AEM_PORT=4500
+      - ALLOW_CACHE_INVALIDATION_GLOBALLY=true
+      - DISP_RUN_MODE=dev
+      - ENVIRONMENT_TYPE=dev
+      - HOT_RELOAD=true
+      - REWRITE_LOG_LEVEL=debug
+    ports:
+      - "${DISPATCHER_HTTP}:80"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 80
+    volumes:
+      - ${VOLUME_DIR}/dispatcher/logs:/var/log/apache2
+      - ${VOLUME_DIR}/dispatcher/cache:/mnt/var/www
+      - ${PROJECT_DIR}/dispatcher/src:/mnt/dev/src:ro
+    cap_drop:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+
+  proxy:
+    container_name: proxy
+    hostname: proxy
+    image: nginx:mainline-alpine3.18-slim
+    restart: always
+    environment:
+      - TZ=${TZ}
+    ports:
+      - "${PROXY_HTTP}:80"
+      - "${PROXY_HTTPS}:443"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 80
+    volumes:
+      - ${VOLUME_DIR}/proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${VOLUME_DIR}/proxy/conf.d:/etc/nginx/conf.d:ro
+      - ${VOLUME_DIR}/proxy/html:/usr/share/nginx/html:ro
+      - ${VOLUME_DIR}/proxy/ssl:/etc/nginx/ssl:ro
+      - ${VOLUME_DIR}/proxy/logs:/var/log/nginx
+    cap_drop:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
+  smtp:
+    container_name: smtp
+    hostname: smtp
+    image: inbucket/inbucket:main
+    restart: always
+    environment:
+      - TZ=${TZ}
+    ports:
+      - "4025:2500"
+      - "4090:9000"
+    cap_drop:
+      - NET_RAW
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          memory: 512m
+
