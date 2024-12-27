@@ -89,7 +89,7 @@ const createLocalFiles = async (options) => {
     const envTpl2 = "AUTHOR_HTTP: {{it.AUTHOR_HTTP}} \nAUTHOR_DEBUG: {{it.AUTHOR_DEBUG}} \n# test";
 
     const envData = options2data(options);
-    const env = Sqrl.render(envTpl2, envData);
+    const env = Sqrl.render(envTpl, envData);
 
     console.log(env);
     // write env
