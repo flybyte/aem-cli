@@ -2,6 +2,7 @@ import path from "path";
 import { Option } from "commander";
 import chalk from "chalk";
 import * as Sqrl from 'squirrelly';
+import Mustache from "mustache";
 import { Constants } from "../constants.js";
 import {
     checkIfContainerEngineAvailable,
@@ -84,12 +85,11 @@ const checkIfProceed = (options) => {
 
 const createLocalFiles = async (options) => {
     const envTpl = await fetchResourceAsText(Constants.templates.env);
-    const composeTpl = await fetchResourceAsText(Constants.templates.compose);
-
-    const envTpl2 = "AUTHOR_HTTP: {{it.AUTHOR_HTTP}} \nAUTHOR_DEBUG: {{it.AUTHOR_DEBUG}} \n# test";
-
     const envData = options2data(options);
-    const env = Sqrl.render(envTpl, envData);
+    const env = Mustache.render(envTpl, envData);
+    //const env = Sqrl.render(envTpl, envData);
+
+    const compose = await fetchResourceAsText(Constants.templates.compose);
 
     console.log(env);
     // write env
