@@ -1,7 +1,6 @@
 import path from "path";
 import { Option } from "commander";
 import chalk from "chalk";
-import * as Sqrl from 'squirrelly';
 import Mustache from "mustache";
 import { Constants } from "../constants.js";
 import {
@@ -87,7 +86,6 @@ const createLocalFiles = async (options) => {
     const envTpl = await fetchResourceAsText(Constants.templates.env);
     const envData = options2data(options);
     const env = Mustache.render(envTpl, envData);
-    //const env = Sqrl.render(envTpl, envData);
 
     const compose = await fetchResourceAsText(Constants.templates.compose);
 

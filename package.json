@@ -16,7 +16,6 @@
         "chalk": "^5.3.0",
         "commander": "^12.1.0",
         "mustache": "^4.2.0",
-        "squirrelly": "^9.1.0",
         "sudo-prompt": "^9.2.1"
     },
     "devDependencies": {

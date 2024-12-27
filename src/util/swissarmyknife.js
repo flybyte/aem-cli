@@ -137,6 +137,8 @@ export const options2data = (options) => {
     const proxy = options.proxy.split(",");
     const mail = options.mail.split(",");
 
+    console.log(proxy);
+
     data.AUTHOR_HTTP = author[0];
     data.AUTHOR_DEBUG = author[1];
     data.AUTHOR_JMX = author[2];
