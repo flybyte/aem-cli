@@ -6,15 +6,6 @@ import { Constants } from "./constants.js";
 
 const { white, red } = chalk;
 
-// hide deprecation warnings from sudo-prompt
-export const hideDeprecationWarnings = () => {
-    process.emitWarning = (warning, ...args) => {
-        if (warning.includes("The `util.isObject` API is deprecated.")) return;
-        if (warning.includes("The `util.isFunction` API is deprecated.")) return;
-        console.warn(warning);
-    };
-};
-
 export const checkIfFilesExist = (files) => {
     const existing = [];
     const missing = [];
@@ -145,37 +136,4 @@ export const writeTextToFile = (filePath, content) => {
     }
 };
 
-export const options2data = (options) => {
-    const data = {};
-
-    const author = options.author.split(",");
-    const publish = options.publish.split(",");
-    const proxy = options.proxy.split(",");
-    const mail = options.mail.split(",");
-
-    data.AUTHOR_HTTP = author[0];
-    data.AUTHOR_DEBUG = author[1];
-    data.AUTHOR_JMX = author[2];
-    data.BACKUP_DIR = path.join(process.cwd(), Constants.folder.backups);
-    data.DISPATCHER_HTTP = options.dispatcher;
-    data.DOMAIN = options.domain;
-    data.ENGINE = options.engine;
-    data.HOSTS = options.hosts;
-    data.IMAGE = options.image;
-    data.MAIL_HTTP = mail[0]
-    data.MAIL_SMTP = mail[1]
-    data.NAME = options.name;
-    data.PROJECT_DIR = path.resolve(options.maven);
-    data.PROXY_HTTP = proxy[0];
-    data.PROXY_HTTPS = proxy[1];
-    data.SSL = options.ssl;
-    data.PUBLISH_HTTP = publish[0];
-    data.PUBLISH_DEBUG = publish[1];
-    data.PUBLISH_JMX = publish[2];
-    data.TAG = options.tag;
-    data.TZ = options.timezone;
-    data.VOLUME_DIR = path.join(process.cwd(), Constants.folder.volumes);
-
-    return data;
-};
 
