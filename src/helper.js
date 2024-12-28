@@ -2,7 +2,6 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
-import { Constants } from "./constants.js";
 
 const { white, red } = chalk;
 
