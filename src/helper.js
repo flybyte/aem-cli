@@ -2,8 +2,10 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
+import doT from "dot";
 
 const { white, red } = chalk;
+doT.templateSettings.strip = false;
 
 export const checkIfFilesExist = (files) => {
     const existing = [];
@@ -135,4 +137,10 @@ export const writeTextToFile = (filePath, content) => {
     }
 };
 
+export const createTemplates = async (url, data, target) => {
+    const template = await fetchResourceAsText(url);
+    const render = doT.template(template);
+    const content = render(data);
+    writeTextToFile(target, content);
+};
 
