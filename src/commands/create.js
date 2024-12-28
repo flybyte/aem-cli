@@ -4,7 +4,7 @@ import {
     checkIfContainerEngineAvailable,
     parseEnvFile,
     checkIfLoggedInContainerRegistry,
-} from "../util/swissarmyknife.js";
+} from "../helper.js";
 
 export const createCommand = (program) => {
     const cmd = program.command("create").description("create aemdev environment");

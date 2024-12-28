@@ -2,6 +2,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
+import { Constants } from "./constants.js";
 
 const { white, red } = chalk;
 
@@ -108,13 +109,20 @@ export const parseEnvFile = () => {
     return result;
 };
 
+export const createFolder = (folderPath) => {
+    try {
+        fs.mkdirSync(folderPath, { recursive: true });
+    } catch (error) {
+        printErrorAndExit(`Cannot create folders for ${white(folderPath)}: ${error.message}`, 106);
+    }
+};
+
 export const fetchResource = async (url) => {
     try {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(response.statusText);
         }
-
         return response;
     } catch (error) {
         printErrorAndExit(`Cannot fetch resource for ${url}: ${error.message}`, 105);
@@ -129,6 +137,14 @@ export const fetchResourceAsBinary = async (url) => {
     return (await fetchResource(url)).body;
 }
 
+export const writeTextToFile = (filePath, content) => {
+    try {
+        fs.writeFileSync(filePath, content, "utf8");
+    } catch (error) {
+        printErrorAndExit(`Cannot write text to ${filePath}: ${error.message}`, 107);
+    }
+};
+
 export const options2data = (options) => {
     const data = {};
 
@@ -137,15 +153,14 @@ export const options2data = (options) => {
     const proxy = options.proxy.split(",");
     const mail = options.mail.split(",");
 
-    console.log(proxy);
-
     data.AUTHOR_HTTP = author[0];
     data.AUTHOR_DEBUG = author[1];
     data.AUTHOR_JMX = author[2];
-    data.BACKUP_DIR = path.join(process.cwd(), options.backup);
+    data.BACKUP_DIR = path.join(process.cwd(), Constants.folder.backups);
     data.DISPATCHER_HTTP = options.dispatcher;
     data.DOMAIN = options.domain;
     data.ENGINE = options.engine;
+    data.HOSTS = options.hosts;
     data.IMAGE = options.image;
     data.MAIL_HTTP = mail[0]
     data.MAIL_SMTP = mail[1]
@@ -159,7 +174,7 @@ export const options2data = (options) => {
     data.PUBLISH_JMX = publish[2];
     data.TAG = options.tag;
     data.TZ = options.timezone;
-    data.VOLUME_DIR = path.join(process.cwd(), options.volume);
+    data.VOLUME_DIR = path.join(process.cwd(), Constants.folder.volumes);
 
     return data;
 };
