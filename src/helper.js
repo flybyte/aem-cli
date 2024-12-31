@@ -125,8 +125,18 @@ export const fetchResourceAsText = async (url) => {
     return (await fetchResource(url)).text();
 }
 
-export const fetchResourceAsBinary = async (url) => {
-    return (await fetchResource(url)).body;
+export const fetchResourceAsBinary = async (url, target) => {
+    const response = await fetchResource(url);
+    const fileStream = fs.createWriteStream(path.resolve(target));
+    response.pipe(fileStream);
+
+    fileStream.on("finish", () => {
+       fileStream.close();
+    });
+
+    fileStream.on("error", (err) => {
+        printErrorAndExit(`Cannot fetch resource for ${url} and store at ${target}: ${error.message}`, 106);
+    });
 }
 
 export const writeTextToFile = (filePath, content) => {
