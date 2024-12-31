@@ -3,6 +3,8 @@ import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 import doT from "dot";
+import { pipeline } from 'stream/promises';
+import JSZip from 'jszip';
 
 const { white, red } = chalk;
 doT.templateSettings.strip = false;
@@ -127,16 +129,12 @@ export const fetchResourceAsText = async (url) => {
 
 export const fetchResourceAsBinary = async (url, target) => {
     const response = await fetchResource(url);
-    const fileStream = fs.createWriteStream(path.resolve(target));
-    response.pipe(fileStream);
-
-    fileStream.on("finish", () => {
-       fileStream.close();
-    });
-
-    fileStream.on("error", (err) => {
+    try {
+        const fileStream = fs.createWriteStream(path.resolve(target));
+        await pipeline(response.body, fileStream);
+    } catch (error) {
         printErrorAndExit(`Cannot fetch resource for ${url} and store at ${target}: ${error.message}`, 106);
-    });
+    }
 }
 
 export const writeTextToFile = (filePath, content) => {
@@ -147,10 +145,17 @@ export const writeTextToFile = (filePath, content) => {
     }
 };
 
-export const createTemplates = async (url, data, target) => {
-    const template = await fetchResourceAsText(url);
-    const render = doT.template(template);
-    const content = render(data);
-    writeTextToFile(target, content);
+export const processTemplate = async (url, data) => {
+    try {
+        const template = await fetchResourceAsText(url);
+        const render = doT.template(template);
+        return render(data);
+    } catch (error) {
+        printErrorAndExit(`Cannot render template from ${url}: ${error.message}`, 107);
+    }
 };
 
+export const processTemplateAndSave = async (url, data, target) => {
+    const content = await processTemplate(url, data);
+    writeTextToFile(target, content);
+};
