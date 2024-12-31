@@ -1,4 +1,7 @@
 export const Constants = Object.freeze({
+    files: {
+
+    },
     folder: {
         backups: "./backups",
         volumes: "./volumes",
