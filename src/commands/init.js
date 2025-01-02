@@ -134,8 +134,8 @@ const createLocalFiles = async (options) => {
     const proxyConfDir = path.join(curDir, Constants.folder.volumes, "proxy", "conf.d");
 
     await helper.processTemplateAndSave(Constants.templates.env, data, path.join(curDir, ".env"));
-    await helper.processTemplateAndSave(Constants.templates.compose, {}, path.join(curDir, "compose.yml"));
-    await helper.processTemplateAndSave(Constants.templates.readme, {}, path.join(curDir, "README.md"));
+    await helper.processTemplateAndSave(Constants.templates.compose, data, path.join(curDir, "compose.yml"));
+    await helper.processTemplateAndSave(Constants.templates.readme, data, path.join(curDir, "README.md"));
 
     await helper.processTemplateAndSave(Constants.templates.mail, { ...data, AEM_TYPE: "author" },
         path.join(authorDir, "DefaultMailService.config"));
