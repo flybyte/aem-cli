@@ -148,7 +148,11 @@ export const writeTextToFile = (filePath, content) => {
 export const processTemplate = async (url, data) => {
     try {
         const template = await fetchResourceAsText(url);
+        //const template = "{{? it.SSL }}TRUE{{?}}";
         const render = doT.template(template);
+        //console.log(render(data));
+        //process.exit(0);
+
         return render(data);
     } catch (error) {
         printErrorAndExit(`Cannot render template from ${url}: ${error.message}`, 107);
