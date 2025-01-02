@@ -92,7 +92,7 @@ services:
     restart: always
     environment:
       - TZ=${TZ}
-    ports:
+    ports: {{= it.SSL }}
       - "${PROXY_HTTP}:80"{{? it.SSL }}
       - "${PROXY_HTTPS}:443"{{?}}
     sysctls:
