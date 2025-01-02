@@ -93,8 +93,8 @@ services:
     environment:
       - TZ=${TZ}
     ports:
-      - "${PROXY_HTTP}:80"
-      - "${PROXY_HTTPS}:443"
+      - "${PROXY_HTTP}:80"{{? it.SSL}}
+      - "${PROXY_HTTPS}:443"{{?}}
     sysctls:
       net.ipv4.ip_unprivileged_port_start: 80
     volumes:
@@ -130,4 +130,3 @@ services:
       resources:
         limits:
           memory: 512m
-

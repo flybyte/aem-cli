@@ -2,8 +2,8 @@ export const Constants = Object.freeze({
     files: {
         crypto: "https://raw.githubusercontent.com/flybyte/aem-cli/refs/heads/main/resources/v1/files/crypto_support.zip",
         nginx: "https://raw.githubusercontent.com/flybyte/aem-cli/refs/heads/main/resources/v1/files/nginx.conf",
-        replicationFlush: "https://raw.githubusercontent.com/flybyte/aem-cli/refs/heads/main/resources/v1/files/replicationFlush.zip",
-        replicationPublish: "https://raw.githubusercontent.com/flybyte/aem-cli/refs/heads/main/resources/v1/files/replicationPublish.zip",
+        replicationFlush: "https://raw.githubusercontent.com/flybyte/aem-cli/refs/heads/main/resources/v1/files/replication_agent_flush.zip",
+        replicationPublish: "https://raw.githubusercontent.com/flybyte/aem-cli/refs/heads/main/resources/v1/files/replication_agent_publish.zip",
     },
     folder: {
         backups: "./backups",

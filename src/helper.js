@@ -1,10 +1,10 @@
 import { execSync } from "child_process";
+import os from "os";
 import fs from "fs";
 import path from "path";
 import chalk from "chalk";
 import doT from "dot";
-import { pipeline } from 'stream/promises';
-import JSZip from 'jszip';
+import { pipeline } from "stream/promises";
 
 const { white, red } = chalk;
 doT.templateSettings.strip = false;
@@ -40,7 +40,7 @@ export const checkIfContainerEngineAvailable = () => {
 
 export const executeCommand = (cmd) => {
     try {
-        execSync(cmd, { stdio: "ignore" });
+        execSync(cmd);
         return true;
     } catch {
         return false;
@@ -125,7 +125,7 @@ export const fetchResource = async (url) => {
 
 export const fetchResourceAsText = async (url) => {
     return (await fetchResource(url)).text();
-}
+};
 
 export const fetchResourceAsBinary = async (url, target) => {
     const response = await fetchResource(url);
@@ -135,7 +135,7 @@ export const fetchResourceAsBinary = async (url, target) => {
     } catch (error) {
         printErrorAndExit(`Cannot fetch resource for ${url} and store at ${target}: ${error.message}`, 106);
     }
-}
+};
 
 export const writeTextToFile = (filePath, content) => {
     try {
@@ -158,4 +158,15 @@ export const processTemplate = async (url, data) => {
 export const processTemplateAndSave = async (url, data, target) => {
     const content = await processTemplate(url, data);
     writeTextToFile(target, content);
+};
+
+export const getPlatformID = () => {
+    const id = os.platform() + "/" + os.arch();
+
+    if (id === "win32/x64") return "windows/amd64";
+    if (id === "linux/x64") return "linux/amd64";
+    if (id === "darwin/x64") return "darwin/amd64";
+    if (id === "darwin/arm64") return "darwin/arm64";
+
+    printErrorAndExit(`Unsupported platform ${id}`, 109);
 };
