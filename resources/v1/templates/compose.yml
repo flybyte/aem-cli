@@ -93,8 +93,8 @@ services:
     environment:
       - TZ=${TZ}
     ports:
-      - "${PROXY_HTTP}:80"{{? it.SSL === "true"}}
-      - "${PROXY_HTTPS}:443"{{?}}
+      - "${PROXY_HTTP}:80"{{ if ({{#it.SSL}}) { }}
+      - "${PROXY_HTTPS}:443"{{ } }}
     sysctls:
       net.ipv4.ip_unprivileged_port_start: 80
     volumes:
